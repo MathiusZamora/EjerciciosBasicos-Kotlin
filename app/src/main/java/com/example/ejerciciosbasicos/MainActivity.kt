@@ -54,19 +54,22 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("main_menu") {
             MainMenu(
                 modifier = modifier,
-                onNavigateToNotas = { navController.navigate("notas") }
+                onNavigateToNotas = { navController.navigate("notas") },
+                onNavigateToIva = { navController.navigate("iva")}
             )
         }
         composable("notas") {
             Notass(modifier = modifier)
         }
+        composable("iva") { Iva(modifier = modifier) }
     }
 }
 
 @Composable
 fun MainMenu(
     modifier: Modifier = Modifier,
-    onNavigateToNotas: () -> Unit
+    onNavigateToNotas: () -> Unit,
+    onNavigateToIva: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -77,7 +80,7 @@ fun MainMenu(
     ) {
         Text(
             text = "Menú Principal",
-            fontSize = 24.sp,
+            fontSize = 27.sp,
             fontWeight = FontWeight.Bold
         )
 
@@ -87,6 +90,12 @@ fun MainMenu(
             onClick = onNavigateToNotas
         ) {
             Text(text = "Calcular Promedio de Notas")
+        }
+
+        Button(
+            onClick = onNavigateToIva
+        ) {
+            Text(text = "Calcular IVA de Producto")
         }
 
     }
@@ -109,7 +118,9 @@ fun Notass(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Calcular nota final de estudiante: ")
+        Text(text = "Calcular nota final de estudiante: ",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -166,3 +177,54 @@ fun Notass(modifier: Modifier = Modifier) {
 
 
 
+//SEGUNDO EJERCICIO TERMINADO
+@Composable
+fun Iva(modifier: Modifier = Modifier) {
+    var producto by remember { mutableStateOf("") }
+    var productoiva by remember { mutableStateOf("") }
+    var ivaa by remember { mutableStateOf(false) }
+
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Calcular IVA de un producto: ",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold)
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "Ingrese el precio del producto: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = producto,
+            onValueChange = { producto = it },
+            label = { Text("Precio del producto") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { ivaa = true }
+        ) {
+            Text(text = "Calcular IVA")
+        }
+
+        if (producto.isNotEmpty() && ivaa) {
+            Spacer(modifier = Modifier.height(8.dp))
+            var ivaa = producto.toDouble() * 0.15
+            var productoiva = producto.toFloat() + ivaa.toFloat()
+            Text(text = "El IVA del producto es: $ivaa")
+            Text(text = "El Valor total con IVA incluido es: $productoiva")
+        } else {
+            Text(text = "Ingrese el precio de un producto")
+        }
+    }
+}
