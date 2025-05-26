@@ -56,7 +56,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 modifier = modifier,
                 onNavigateToNotas = { navController.navigate("notas") },
                 onNavigateToIva = { navController.navigate("iva")},
-                onNavigateToInss = { navController.navigate("inss")}
+                onNavigateToInss = { navController.navigate("inss")},
+                onNavigateToLetters = { navController.navigate("lett")}
             )
         }
         composable("notas") {
@@ -64,6 +65,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         composable("iva") { Iva(modifier = modifier) }
         composable("inss") { Inss(modifier = modifier) }
+        composable("lett") { letters(modifier = modifier) }
     }
 }
 
@@ -72,7 +74,8 @@ fun MainMenu(
     modifier: Modifier = Modifier,
     onNavigateToNotas: () -> Unit,
     onNavigateToIva: () -> Unit,
-    onNavigateToInss: () -> Unit
+    onNavigateToInss: () -> Unit,
+    onNavigateToLetters: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -105,6 +108,12 @@ fun MainMenu(
             onClick = onNavigateToInss
         ) {
             Text(text = "Calcular deduccion INSS")
+        }
+
+        Button(
+            onClick = onNavigateToLetters
+        ) {
+            Text(text = "Calcular letras en una frase")
         }
 
     }
@@ -287,6 +296,51 @@ fun Inss(modifier: Modifier = Modifier) {
             Text(text = "El salario con deduccion inss es: $deduccion")
         } else {
             Text(text = "por favor, Ingrese el salario a deducir")
+        }
+    }
+}
+
+//CUARTO EJERCICIO TERMINADO
+@Composable
+fun letters(modifier: Modifier = Modifier) {
+    var frase by remember { mutableStateOf("") }
+    var mostrarResultado by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Contar letras de una frase: ",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold)
+
+        Text(text = "Escribe una frase o palabra: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = frase,
+            onValueChange = { frase = it },
+            label = { Text("Ingresa una frase") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { mostrarResultado = true }
+        ) {
+            Text(text = "Contar Letras")
+        }
+
+        if (frase.isNotEmpty() && mostrarResultado) {
+            Spacer(modifier = Modifier.height(8.dp))
+            val conteoLetras = frase.count { it.isLetter() }
+            Text(text = "La frase tiene $conteoLetras letras")
+        } else {
+            Text(text = "No has escrito nada")
         }
     }
 }
