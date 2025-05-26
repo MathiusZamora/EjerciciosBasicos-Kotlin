@@ -60,7 +60,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("notas") {
             Notass(modifier = modifier)
         }
-
     }
 }
 
@@ -90,7 +89,80 @@ fun MainMenu(
             Text(text = "Calcular Promedio de Notas")
         }
 
-
     }
 }
+
+
+//PRIMER EJERCICIO TERMINADO
+@Composable
+fun Notass(modifier: Modifier = Modifier) {
+    var nota1 by remember { mutableStateOf("") }
+    var nota2 by remember { mutableStateOf("") }
+    var nota3 by remember { mutableStateOf("") }
+    var notaf by remember { mutableStateOf(false) }
+
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Calcular nota final de estudiante: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "NOTA 1: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = nota1,
+            onValueChange = { nota1 = it },
+            label = { Text("Ingresa nota 1") }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "NOTA 2: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = nota2,
+            onValueChange = { nota2 = it },
+            label = { Text("Ingresa nota 2") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "NOTA 3: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = nota3,
+            onValueChange = { nota3 = it },
+            label = { Text("Ingresa nota 3") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { notaf = true }
+        ) {
+            Text(text = "Nota Final")
+        }
+
+        if (nota1.isNotEmpty() && nota2.isNotEmpty() && nota3.isNotEmpty() && notaf) {
+            Spacer(modifier = Modifier.height(8.dp))
+            var notaf = nota1.toDouble() + nota2.toDouble() + nota3.toDouble() / 3
+            Text(text = "Su nota final es: $notaf")
+        } else {
+            Text(text = "Ingrese las 3 notas")
+        }
+    }
+}
+
+
 
