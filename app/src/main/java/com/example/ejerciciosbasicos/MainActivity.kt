@@ -55,13 +55,15 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             MainMenu(
                 modifier = modifier,
                 onNavigateToNotas = { navController.navigate("notas") },
-                onNavigateToIva = { navController.navigate("iva")}
+                onNavigateToIva = { navController.navigate("iva")},
+                onNavigateToInss = { navController.navigate("inss")}
             )
         }
         composable("notas") {
             Notass(modifier = modifier)
         }
         composable("iva") { Iva(modifier = modifier) }
+        composable("inss") { Inss(modifier = modifier) }
     }
 }
 
@@ -69,7 +71,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 fun MainMenu(
     modifier: Modifier = Modifier,
     onNavigateToNotas: () -> Unit,
-    onNavigateToIva: () -> Unit
+    onNavigateToIva: () -> Unit,
+    onNavigateToInss: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -96,6 +99,12 @@ fun MainMenu(
             onClick = onNavigateToIva
         ) {
             Text(text = "Calcular IVA de Producto")
+        }
+
+        Button(
+            onClick = onNavigateToInss
+        ) {
+            Text(text = "Calcular deduccion INSS")
         }
 
     }
@@ -170,7 +179,7 @@ fun Notass(modifier: Modifier = Modifier) {
             var notaf = nota1.toDouble() + nota2.toDouble() + nota3.toDouble() / 3
             Text(text = "Su nota final es: $notaf")
         } else {
-            Text(text = "Ingrese las 3 notas")
+            Text(text = "por favor, Ingrese las 3 notas")
         }
     }
 }
@@ -181,7 +190,7 @@ fun Notass(modifier: Modifier = Modifier) {
 @Composable
 fun Iva(modifier: Modifier = Modifier) {
     var producto by remember { mutableStateOf("") }
-    var productoiva by remember { mutableStateOf("") }
+    //var productoiva by remember { mutableStateOf("") }
     var ivaa by remember { mutableStateOf(false) }
 
 
@@ -224,7 +233,60 @@ fun Iva(modifier: Modifier = Modifier) {
             Text(text = "El IVA del producto es: $ivaa")
             Text(text = "El Valor total con IVA incluido es: $productoiva")
         } else {
-            Text(text = "Ingrese el precio de un producto")
+            Text(text = "por favor, Ingrese el precio de un producto")
+        }
+    }
+}
+
+
+
+//TERCER EJERCICIO TERMINADO
+@Composable
+fun Inss(modifier: Modifier = Modifier) {
+    var salario by remember { mutableStateOf("") }
+    var ins by remember { mutableStateOf(false) }
+
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Calcular INSS de un salario: ",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold)
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "Ingrese el salario a deducir: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = salario,
+            onValueChange = { salario = it },
+            label = { Text("salario sin deducir") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { ins = true }
+        ) {
+            Text(text = "Calcular INSS")
+        }
+
+        if (salario.isNotEmpty() && ins) {
+            Spacer(modifier = Modifier.height(8.dp))
+            var ins = salario.toDouble() * 0.07
+            var deduccion = salario.toFloat() - ins.toFloat()
+            Text(text = "El INSS es: $ins")
+            Text(text = "El salario con deduccion inss es: $deduccion")
+        } else {
+            Text(text = "por favor, Ingrese el salario a deducir")
         }
     }
 }
