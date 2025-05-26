@@ -57,7 +57,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 onNavigateToNotas = { navController.navigate("notas") },
                 onNavigateToIva = { navController.navigate("iva")},
                 onNavigateToInss = { navController.navigate("inss")},
-                onNavigateToLetters = { navController.navigate("lett")}
+                onNavigateToLetters = { navController.navigate("lett")},
+                onNavigateToCalCap = { navController.navigate("calcap")}
             )
         }
         composable("notas") {
@@ -66,6 +67,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("iva") { Iva(modifier = modifier) }
         composable("inss") { Inss(modifier = modifier) }
         composable("lett") { letters(modifier = modifier) }
+        composable("calcap") { CalcularCapitalContable(modifier = modifier) }
+
     }
 }
 
@@ -76,6 +79,7 @@ fun MainMenu(
     onNavigateToIva: () -> Unit,
     onNavigateToInss: () -> Unit,
     onNavigateToLetters: () -> Unit,
+    onNavigateToCalCap: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -114,6 +118,12 @@ fun MainMenu(
             onClick = onNavigateToLetters
         ) {
             Text(text = "Calcular letras en una frase")
+        }
+
+        Button(
+            onClick = onNavigateToCalCap
+        ) {
+            Text(text = "Calcular Capital Contable")
         }
 
     }
@@ -185,10 +195,18 @@ fun Notass(modifier: Modifier = Modifier) {
 
         if (nota1.isNotEmpty() && nota2.isNotEmpty() && nota3.isNotEmpty() && notaf) {
             Spacer(modifier = Modifier.height(8.dp))
-            var notaf = nota1.toDouble() + nota2.toDouble() + nota3.toDouble() / 3
-            Text(text = "Su nota final es: $notaf")
+            val promedio = try {
+                (nota1.toDouble() + nota2.toDouble() + nota3.toDouble()) / 3.0
+            } catch (e: NumberFormatException) {
+                -1.0 // Indicador de error
+            }
+            if (promedio >= 0) {
+                Text(text = "Su nota final es: %.2f".format(promedio))
+            } else {
+                Text(text = "Por favor, ingrese solo números")
+            }
         } else {
-            Text(text = "por favor, Ingrese las 3 notas")
+            Text(text = "Por favor, ingrese las 3 notas")
         }
     }
 }
@@ -237,12 +255,21 @@ fun Iva(modifier: Modifier = Modifier) {
 
         if (producto.isNotEmpty() && ivaa) {
             Spacer(modifier = Modifier.height(8.dp))
-            var ivaa = producto.toDouble() * 0.15
-            var productoiva = producto.toFloat() + ivaa.toFloat()
-            Text(text = "El IVA del producto es: $ivaa")
-            Text(text = "El Valor total con IVA incluido es: $productoiva")
+            val iva = try {
+                producto.toDouble() * 0.15
+            } catch (e: NumberFormatException) {
+                -1.0 // Indicador de error
+            }
+            if (iva >= 0) {
+                val totalConIva = producto.toDouble() + iva
+                Text(text = "El IVA del producto es: %.2f".format(iva))
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "El valor total con IVA incluido es: %.2f".format(totalConIva))
+            } else {
+                Text(text = "Por favor, ingrese solo números")
+            }
         } else {
-            Text(text = "por favor, Ingrese el precio de un producto")
+            Text(text = "Por favor, ingrese el precio de un producto")
         }
     }
 }
@@ -339,6 +366,71 @@ fun letters(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(8.dp))
             val conteoLetras = frase.count { it.isLetter() }
             Text(text = "La frase tiene $conteoLetras letras")
+        } else {
+            Text(text = "No has escrito nada")
+        }
+    }
+}
+
+
+//QUINTO EJERCICIO TERMINADO
+@Composable
+fun CalcularCapitalContable(modifier: Modifier = Modifier) {
+    var activos by remember { mutableStateOf("") }
+    var pasivos by remember { mutableStateOf("") }
+    var mostrarResultado by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Calcular capital contable: ",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "ACTIVOS: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = activos,
+            onValueChange = { activos = it },
+            label = { Text("Ingresa los activos") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "PASIVOS: ")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = pasivos,
+            onValueChange = { pasivos = it },
+            label = { Text("Ingresa los pasivos") }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { mostrarResultado = true }
+        ) {
+            Text(text = "Calcular Capital")
+        }
+
+        if (activos.isNotEmpty() && pasivos.isNotEmpty() && mostrarResultado) {
+            Spacer(modifier = Modifier.height(8.dp))
+            val capital = try {
+                activos.toDouble() - pasivos.toDouble()
+            } catch (e: NumberFormatException) {
+                0.0
+            }
+            Text(text = "El capital contable es: %.2f".format(capital))
         } else {
             Text(text = "No has escrito nada")
         }
